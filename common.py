@@ -5,8 +5,25 @@ from __future__ import absolute_import, division, print_function, with_statement
 
 import os
 import sys
+import logging
 import stat
 import hashlib
+
+def extract_symlink(filename):
+  if not (os.path.isfile(filename) and not os.path.islink(filename)):
+    return None
+
+  dirname  = os.path.dirname(filename)
+  basename = os.path.basename(filename)
+
+  parts = basename.split('.')
+
+  if parts and (len(parts) >= 2):
+    symlinkname = os.path.join(dirname,'.'.join(parts[:2]))
+    return symlinkname
+
+  return None
+
 
 def extract_md5(filename):
   if not (os.path.isfile(filename) and not os.path.islink(filename)):
@@ -23,29 +40,6 @@ def extract_md5(filename):
     return None
 
 
-def check_link(filename):
-  if not (os.path.isfile(filename) and not os.path.islink(filename)):
-    return False
-
-  dirname  = os.path.dirname(filename)
-  basename = os.path.basename(filename)
-
-  parts = basename.split('.')
-
-  if parts and (len(parts) >= 2):
-    symlinkname = os.path.join(dirname,'.'.join(parts[:2]))
-  else:
-    return False
-
-  if not (os.path.islink(symlinkname) and os.path.exists(symlinkname) and os.path.samefile(os.readlink(symlinkname), filename)):
-    os.path.lexists(symlinkname) and os.remove(symlinkname)
-    os.symlink(filename,symlinkname)
-    print("repair symbolic link %s for %s" %(symlinkname,filename))
-    return True
-
-  return False
-
-    
 def md5sum(filename):
   try:
     with open(filename,'rb') as f:
@@ -56,6 +50,34 @@ def md5sum(filename):
   except:
     return None
 
+
+def check_link(filename):
+  symlinkname = extract_symlink(filename)
+
+  if not symlinkname:
+    return False
+
+  if not (os.path.islink(symlinkname) and os.path.exists(symlinkname) and os.path.samefile(os.readlink(symlinkname), filename)):
+    os.path.lexists(symlinkname) and os.remove(symlinkname)
+    os.symlink(filename,symlinkname)
+    logging.info("repair symbolic link %s for %s" %(symlinkname,filename))
+    return True
+
+  return False
+
+    
+def clear_dirty(filename,recyle_bin):
+  symlinkname = extract_symlink(filename)
+  md5_name = extract_md5(filename)
+  md5_cal  = md5sum(filename)
+  dirname  = os.path.dirname(filename)
+  basename = os.path.basename(filename)
+
+  if md5_name and md5_cal and cmp(md5_name,md5_cal):
+    if symlinkname:
+      os.path.lexists(symlinkname) and os.remove(symlinkname)
+    os.rename(filename, os.path.join(recyle_bin,basename))
+    
 
 def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, abspath = True, onlyfn = True):
   '''
