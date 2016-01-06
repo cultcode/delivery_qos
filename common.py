@@ -82,7 +82,6 @@ def clear_dirty(filename,recyle_bin):
 def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, abspath = True, onlyfn = True):
   '''
   '''
-
   if sort_cond == "mtime":
     f_sort_cond = lambda e:e[1].st_mtime
   elif sort_cond == "ctime":

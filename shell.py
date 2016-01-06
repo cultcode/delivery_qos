@@ -3,39 +3,39 @@ from __future__ import absolute_import, division, print_function, \
 
 import os
 import sys
+import json
 import logging
 
-def find_config():
-  config_path = 'config.json'
-  if os.path.exists(config_path):
-    return config_path
+def check_config(config):
+  assert(config["recyle_bin"])
+  os.path.lexists(config["recyle_bin"]) or os.makedirs(config["recyle_bin"])
+  assert(config["paths"])
 
-  config_path = os.path.join('/etc',(__name__.split('.'))[0]+'.json')
-  if os.path.exists(config_path):
-    return config_path
+def set_config(config):
+  config_path = config["config_path"]
 
-  return None
+  if config_path:
+    logging.info('dumping config to %s' % config_path)
+    try:
+      with open(config_path, 'wb') as f:
+        f.write(json.dumps(config).encode('utf8'))
+    except Exception as e:
+      logging.error("Can't file.write %s:%s, give up" %(config_path,e))
+
 
 def get_config():
   config = {}
-  config_extra = {}
-  config_path = find_config()
+  config_path = os.path.join('/etc',(__name__.split('.'))[0]+'.json')
 
-  if config_path:
-    logging.info('loading extra config from %s' % config_path)
+  if os.path.exists(config_path):
     try:
       with open(config_path, 'rb') as f:
-        config_extra = json.loads(f.read().decode('utf8'))
+        config = json.loads(f.read().decode('utf8'))
     except Exception as e:
       logging.error("Can't file.read %s:%s, give up" %(config_path,e))
 
-  if config_extra:
-    config.update(config_extra)
-
-  if not config:
-    logging.warn('config not specified')
-
-  config.setdefault('log-file', sys.argv[0]+".log")
+  config.setdefault('log-file', os.path.join('/var/log',(__name__.split('.'))[0]+'.log'))
+  config.setdefault('config_path',config_path)
 
   logging.getLogger('').handlers = []
   logging.basicConfig(
@@ -45,3 +45,7 @@ def get_config():
     filename=config['log-file'],
     filemode='w'
   )
+
+  logging.info(str(config))
+
+  return config
