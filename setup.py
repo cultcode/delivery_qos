@@ -7,6 +7,7 @@ setup(
   version='1.0',
   author='rovere',
   author_email='luowei@mgtv.com',
+  url = "https://github.com/cultcode/delivery_qos",
   packages=['delivery_qos'],
   install_requires=[],
   data_files=[('/etc/init.d', ['/root/luowei/delivery_qos/delivery_scan'])

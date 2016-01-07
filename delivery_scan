@@ -10,7 +10,7 @@
 ### END INIT INFO
 
 #dir=""
-cmd="/usr/local/bin/delivery_qos"
+cmd="/usr/bin/delivery_scan"
 user=""
 
 name=`basename $0`

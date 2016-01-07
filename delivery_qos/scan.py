@@ -12,7 +12,7 @@ import logging
 import stat
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from delivery_qos.common import scan_file, sortdir
+from delivery_qos.common import scan_file, sortdir, disk_overuse,clear_file
 from delivery_qos import shell
 from delivery_qos.shell import get_config, set_config
 
@@ -71,7 +71,16 @@ def scan_incr():
 
 def scan_disk():
   logging.info("Scan_disk started")
-  return
+  paths = shell.config["paths"]
+  paths.sort()
+
+  for index,path in enumerate(paths):
+    if disk_overuse(path,shell.config['disk_max_usage']):
+      filenames = sortdir(path, sort_cond='atime')
+      amount = int(len(filenames)*0.03)
+      logging.info("%s overused, remove %d files" %(path,amount))
+      for filename in filenames[0:amount]:
+        clear_file(filename)
 
 
 def scan():

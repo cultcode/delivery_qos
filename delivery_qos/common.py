@@ -5,9 +5,21 @@ from __future__ import absolute_import, division, print_function, with_statement
 
 import os
 import sys
+import statvfs
 import stat
 import logging
 import hashlib
+
+def disk_overuse(path,disk_max_usage):
+  vfs=os.statvfs(path)
+  available=vfs[statvfs.F_BAVAIL]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)
+  capacity=vfs[statvfs.F_BLOCKS]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)  
+  logging.info("disk %s %d %d " %(path, available,capacity))
+  if (capacity-available)/capacity >= disk_max_usage:
+    return True
+  else:
+    return False
+
 
 def extract_symlink(filename):
   if not (os.path.isfile(filename) and not os.path.islink(filename)):
@@ -17,12 +29,18 @@ def extract_symlink(filename):
   basename = os.path.basename(filename)
 
   parts = basename.split('.')
+  ext = parts and parts[-1] or ''
 
-  if parts and (len(parts) >= 2):
-    symlinkname = os.path.join(dirname,'.'.join(parts[:2]))
-    return symlinkname
+  if ext == 'ng':
+    if (len(parts) >= 2):
+      symlinkname = os.path.join(dirname,'.'.join(parts[:2]))
+  else:
+    return None
 
-  return None
+  if symlinkname == filename:
+    return None
+
+  return symlinkname
 
 
 def extract_md5(filename):
@@ -33,9 +51,19 @@ def extract_md5(filename):
   basename = os.path.basename(filename)
 
   parts = basename.split('.')
+  ext = parts and parts[-1] or ''
 
-  if parts and (len(parts) >= 2) and (len(parts[-2]) == 32):
-    return parts[-2]
+  if ext == 'ng':
+    if (len(parts) >= 2) and (len(parts[-2]) == 32):
+      return parts[-2]
+    else:
+      return None
+  elif ext == 'mp4' or ext == 'm3u8':
+    frags = parts[0].split('_')
+    if frags and frags[0] and (len(frags[0]) == 32):
+      return frags[0]
+    else:
+      return None
   else:
     return None
 
@@ -54,7 +82,7 @@ def md5sum(filename):
 def check_link(filename):
   symlinkname = extract_symlink(filename)
 
-  if not symlinkname or symlinkname == filename:
+  if not symlinkname:
     return False
 
   if not (os.path.islink(symlinkname) and os.path.exists(symlinkname) and os.path.samefile(os.readlink(symlinkname), filename)):
@@ -78,6 +106,13 @@ def clear_dirty(filename,recyle_bin):
       os.path.lexists(symlinkname) and os.remove(symlinkname)
     os.rename(filename, os.path.join(recyle_bin,basename))
     
+
+def clear_file(filename):
+  symlinkname = extract_symlink(filename)
+  if symlinkname:
+    os.path.lexists(symlinkname) and os.remove(symlinkname)
+  os.remove(filename)
+
 
 def scan_file(filename, recyle_bin):
   logging.info("Scanning file %s" %(filename))
