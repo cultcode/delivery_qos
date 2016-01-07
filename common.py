@@ -5,8 +5,8 @@ from __future__ import absolute_import, division, print_function, with_statement
 
 import os
 import sys
-import logging
 import stat
+import logging
 import hashlib
 
 def extract_symlink(filename):
@@ -64,7 +64,6 @@ def check_link(filename):
     return True
 
   return False
-
 
 def clear_dirty(filename,recyle_bin):
   symlinkname = extract_symlink(filename)

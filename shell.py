@@ -65,6 +65,14 @@ def get_config():
   #parameters for scan_incr
   config.setdefault('scan_incr_mtime_start', 5*60)
 
+  #span
+  config.setdefault('scan_store_span_start',1)
+  config.setdefault('scan_store_span_end',8)
+  config.setdefault('scan_incr_span_start',8)
+  config.setdefault('scan_incr_span_end',19)
+  config.setdefault('scan_disk_span_start',1)
+  config.setdefault('scan_disk_span_end',2)
+
   check_config()
 
   logging.info(str(config))
