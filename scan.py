@@ -20,13 +20,14 @@ def scan_store():
   paths = shell.config['paths']
   index = paths.index(shell.config['scan_store_last_path'])
   paths = paths[index:] + paths[:index+1]
-  scan_store_mtime_end = int(time.time()) - shell.config["scan_store_mtime_end"]
+  scan_store_mtime_end = time.time() - shell.config["scan_store_mtime_end"]
+  scan_store_last_mtime = shell.config['scan_store_last_mtime']
 
   for index,path in enumerate(paths):
     if index == 0:
-      filter_cond = lambda e:e.st_mtime >= shell.config['scan_store_last_mtime'] and e.st_mtime < scan_store_mtime_end
+      filter_cond = lambda e:e.st_mtime >= scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
     elif index == len(paths) -1:
-      filter_cond = lambda e:e.st_mtime <  shell.config['scan_store_last_mtime'] and e.st_mtime < scan_store_mtime_end
+      filter_cond = lambda e:e.st_mtime <  scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
     else:
       filter_cond = lambda e:e.st_mtime <  scan_store_mtime_end
 
@@ -48,7 +49,7 @@ def scan_incr():
   get_config()
 
   paths = shell.config["paths"].sort()
-  scan_incr_mtime_start = int(time.time()) - shell.config["scan_incr_mtime_start"]
+  scan_incr_mtime_start = time.time() - shell.config["scan_incr_mtime_start"]
 
   for index,path in enumerate(paths):
     filter_cond = lambda e:e[1].st_mtime > scan_incr_mtime_start

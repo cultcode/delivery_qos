@@ -54,23 +54,18 @@ def md5sum(filename):
 def check_link(filename):
   symlinkname = extract_symlink(filename)
 
-  if not symlinkname:
+  if not symlinkname or symlinkname == filename:
     return False
 
-def scan_file(filename, recyle_bin):
-  logging.info("Scanning file %s" %(filename))
-  check_link(filename)
-  clear_dirty(filename, recyle_bin)
-
   if not (os.path.islink(symlinkname) and os.path.exists(symlinkname) and os.path.samefile(os.readlink(symlinkname), filename)):
+    logging.info("repairing symbolic link %s for %s" %(symlinkname,filename))
     os.path.lexists(symlinkname) and os.remove(symlinkname)
     os.symlink(filename,symlinkname)
-    logging.info("repair symbolic link %s for %s" %(symlinkname,filename))
     return True
 
   return False
 
-    
+
 def clear_dirty(filename,recyle_bin):
   symlinkname = extract_symlink(filename)
   md5_name = extract_md5(filename)
@@ -79,11 +74,22 @@ def clear_dirty(filename,recyle_bin):
   basename = os.path.basename(filename)
 
   if md5_name and md5_cal and cmp(md5_name,md5_cal):
+    logging.info("clearing dirty file %s" %(filename))
     if symlinkname:
       os.path.lexists(symlinkname) and os.remove(symlinkname)
     os.rename(filename, os.path.join(recyle_bin,basename))
     
 
+def scan_file(filename, recyle_bin):
+  logging.info("Scanning file %s" %(filename))
+
+  basename = os.path.basename(filename)
+  ext = basename.split('.')[-1]
+  if ext == "ng":
+    check_link(filename)
+    clear_dirty(filename, recyle_bin)
+
+    
 def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, abspath = True, onlyfn = True):
   '''
   '''
@@ -142,5 +148,5 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
 
 
 if __name__ == '__main__':
-  check_link(sys.argv[1])
+  print(str(sortdir(sys.argv[1],sort_cond='mtime')))
 

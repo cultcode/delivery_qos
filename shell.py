@@ -39,6 +39,7 @@ def get_config():
         config = json.loads(f.read().decode('utf8'))
     except Exception as e:
       logging.error("Can't file.read %s:%s, give up" %(config_path,e))
+      sys.exit(1)
 
   config.setdefault('log-file', os.path.join('/var/log',(__name__.split('.'))[0]+'.log'))
 
@@ -47,8 +48,8 @@ def get_config():
     level=logging.INFO,
     format='%(asctime)s %(levelname)-8s %(filename)s %(funcName)s %(lineno)s %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    filename=config['log-file'],
-    filemode='w'
+    #filename=config['log-file'],
+    filemode='a'
   )
 
   #common parameters
