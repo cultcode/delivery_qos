@@ -9,10 +9,12 @@ setup(
   author_email='luowei@mgtv.com',
   packages=['delivery_qos'],
   install_requires=[],
+  data_files=[('/etc/init.d', ['/root/luowei/delivery_qos/delivery_scan'])
+  ],
   entry_points={
     "console_scripts":[
-      '''delivery_qos = delivery_qos.scan:scan''',
+      '''delivery_scan = delivery_qos.scan:scan''',
     ]
-  }
+  },
 )   
 

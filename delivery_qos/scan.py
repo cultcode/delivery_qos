@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, with_statement
 
 import os
 import sys
+import signal
 import stat
 import time
 import logging
@@ -14,6 +15,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from delivery_qos.common import scan_file, sortdir
 from delivery_qos import shell
 from delivery_qos.shell import get_config, set_config
+
+def signal_term_handler(signal, frame):
+    logging.warn('got SIGTERM')
+    set_config()
+    sys.exit(0)
 
 def scan_store():
   logging.info("Scan_store started")
@@ -70,6 +76,8 @@ def scan_disk():
 
 def scan():
   get_config()
+  signal.signal(signal.SIGTERM, signal_term_handler)
+
   now_hour = time.localtime(time.time()).tm_hour
 
   if now_hour in range(shell.config['scan_incr_span_start'],shell.config['scan_incr_span_end']):

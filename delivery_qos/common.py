@@ -125,9 +125,12 @@ def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, absp
 def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   '''
   '''
-  fns = os.listdir(path)
+  fns = []
+  for root, subdirs, files in os.walk(path):
+    for filename in files:
+      fns.append(os.path.join(root,filename))
 
-  a_fns = map(lambda f: os.path.join(path,f), fns)
+  a_fns = map(lambda f: os.path.abspath(f), fns)
   sts = map(os.stat, a_fns)
 
   if abspath:

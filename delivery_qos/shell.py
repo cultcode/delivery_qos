@@ -69,7 +69,7 @@ def get_config():
   config.setdefault('scan_store_span_start',1)
   config.setdefault('scan_store_span_end',8)
   config.setdefault('scan_incr_span_start',8)
-  config.setdefault('scan_incr_span_end',19)
+  config.setdefault('scan_incr_span_end',12)
   config.setdefault('scan_disk_span_start',1)
   config.setdefault('scan_disk_span_end',2)
 
