@@ -57,6 +57,11 @@ def check_link(filename):
   if not symlinkname:
     return False
 
+def scan_file(filename, recyle_bin):
+  logging.info("Scanning file %s" %(filename))
+  check_link(filename)
+  clear_dirty(filename, recyle_bin)
+
   if not (os.path.islink(symlinkname) and os.path.exists(symlinkname) and os.path.samefile(os.readlink(symlinkname), filename)):
     os.path.lexists(symlinkname) and os.remove(symlinkname)
     os.symlink(filename,symlinkname)
@@ -116,10 +121,8 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   '''
   '''
   fns = os.listdir(path)
-  if not path.endswith('/'):
-    path = path + '/'
 
-  a_fns = map(lambda f: path+f, fns)
+  a_fns = map(lambda f: os.path.join(path,f), fns)
   sts = map(os.stat, a_fns)
 
   if abspath:

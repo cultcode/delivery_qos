@@ -6,12 +6,16 @@ import sys
 import json
 import logging
 
-def check_config(config):
-  assert(config["recyle_bin"])
-  os.path.lexists(config["recyle_bin"]) or os.makedirs(config["recyle_bin"])
-  assert(config["paths"])
+config = {}
 
-def set_config(config):
+def check_config():
+  global config
+
+  os.path.lexists(config["recyle_bin"]) or os.makedirs(config["recyle_bin"])
+
+def set_config():
+  global config
+
   config_path = config["config_path"]
 
   if config_path:
@@ -24,7 +28,9 @@ def set_config(config):
 
 
 def get_config():
+  global config
   config = {}
+
   config_path = os.path.join('/etc',(__name__.split('.'))[0]+'.json')
 
   if os.path.exists(config_path):
@@ -35,7 +41,6 @@ def get_config():
       logging.error("Can't file.read %s:%s, give up" %(config_path,e))
 
   config.setdefault('log-file', os.path.join('/var/log',(__name__.split('.'))[0]+'.log'))
-  config.setdefault('config_path',config_path)
 
   logging.getLogger('').handlers = []
   logging.basicConfig(
@@ -46,6 +51,20 @@ def get_config():
     filemode='w'
   )
 
+  #common parameters
+  config.setdefault('config_path',config_path)
+  config.setdefault("recyle_bin", os.path.join('/tmp',__name__.split('.')[0]))
+
+  #parameters for scan_store
+  config.setdefault('scan_store_mtime_end', 7*24*3600)
+  config.setdefault('paths', ['/data'])
+  config.setdefault('scan_store_last_path', config['paths'][0])
+  config.setdefault('scan_store_last_mtime', 0)
+
+  #parameters for scan_incr
+  config.setdefault('scan_incr_mtime_start', 5*60)
+
+  check_config()
+
   logging.info(str(config))
 
-  return config
