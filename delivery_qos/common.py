@@ -10,6 +10,13 @@ import stat
 import logging
 import hashlib
 
+# Use the built-in version of scandir/walk if possible, otherwise
+# use the scandir module version
+try:
+    from os import scandir, walk
+except ImportError:
+    from scandir import scandir, walk
+
 def disk_overuse(path,disk_max_usage):
   vfs=os.statvfs(path)
   available=vfs[statvfs.F_BAVAIL]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)
@@ -161,7 +168,7 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   '''
   '''
   fns = []
-  for root, subdirs, files in os.walk(path):
+  for root, subdirs, files in walk(path):
     for filename in files:
       fns.append(os.path.join(root,filename))
 
