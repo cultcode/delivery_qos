@@ -25,7 +25,10 @@ def scan_store():
   logging.info("Scan_store started")
   paths = shell.config['paths']
   paths.sort()
-  index = paths.index(shell.config['scan_store_last_path'])
+  if shell.config['scan_store_last_path'] in paths:
+    index = paths.index(shell.config['scan_store_last_path'])
+  else:
+    index = 0
   paths = paths[index:] + paths[:index+1]
   scan_store_mtime_end = time.time() - shell.config["scan_store_mtime_end"]
   scan_store_last_mtime = shell.config['scan_store_last_mtime']

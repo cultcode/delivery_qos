@@ -58,7 +58,7 @@ def get_config(prog_name):
   #parameters for scan_store
   config.setdefault('scan_store_mtime_end', 7*24*3600)
   config.setdefault('paths', ['/data/mp4'])
-  config.setdefault('scan_store_last_path', config['paths'][0])
+  config.setdefault('scan_store_last_path', '')
   config.setdefault('scan_store_last_mtime', 0)
 
   #parameters for scan_incr

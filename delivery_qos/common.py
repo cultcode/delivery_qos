@@ -173,6 +173,8 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
         logging.info('remove broken file %s' %filename)
         os.remove(filename)
 
+  logging.info('scan filesystem completed: %s' %path)
+
   a_fns = map(lambda f: os.path.abspath(f), fns)
   sts = map(os.stat, a_fns)
 
