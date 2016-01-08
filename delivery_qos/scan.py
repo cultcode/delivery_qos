@@ -89,7 +89,7 @@ def scan_disk():
     if disk_overuse(path,shell.config['disk_max_usage']):
       filenames = sortdir(path, sort_cond='atime')
       amount = int(len(filenames)*0.03)
-      logging.info("%s overused, remove %d files" %(path,amount))
+      logging.info("%s overused, removing %d files (%d in total)" %(path,amount, len(filenames)))
       for filename in filenames[0:amount]:
         clear_file(filename)
 

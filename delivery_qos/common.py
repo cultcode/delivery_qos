@@ -16,10 +16,11 @@ def disk_overuse(path,disk_max_usage):
   vfs=os.statvfs(path)
   available=vfs[statvfs.F_BAVAIL]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)
   capacity=vfs[statvfs.F_BLOCKS]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)  
-  logging.info("disk %s %d %d " %(path, available,capacity))
   if (capacity-available)/capacity >= disk_max_usage:
+    logging.info("disk overused %s %d %d " %(path, available,capacity))
     return True
   else:
+    logging.info("disk not overused %s %d %d " %(path, available,capacity))
     return False
 
 
@@ -110,6 +111,7 @@ def clear_dirty(filename,recyle_bin):
     
 
 def clear_file(filename):
+  logging.info("clearing file %s" %(filename))
   symlinkname = extract_symlink(filename)
   if symlinkname:
     os.path.lexists(symlinkname) and os.remove(symlinkname)
