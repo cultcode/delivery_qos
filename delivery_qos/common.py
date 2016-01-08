@@ -194,6 +194,36 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   return sorted(n_res, key = sort_cond, reverse = reverse)
 
 
+def get_subdirs(path,level):
+  """Yield directory names not starting with '.' under given path."""
+  if level < 0:
+    return
+  elif level == 0:
+    yield path
+  else:
+    for entry in scandir.scandir(path):
+      if entry.is_dir():
+        for subdir in  get_subdirs(entry.path, level-1):
+          yield subdir
+      else:
+        yield entry.path
+
+
+def get_paths(paths,level):
+  subdirs=[]
+
+  for path in paths:
+    for subdir in get_subdirs(path,level):
+      subdirs.append(subdir)
+
+  subdirs.sort()
+  logging.info("completed:%s" %str(subdirs))
+
+  return subdirs
+
+
 if __name__ == '__main__':
-  print(str(sortdir(sys.argv[1],sort_cond='mtime')))
+  #print(str(sortdir(sys.argv[1],sort_cond='mtime')))
+  for subdir in get_subdirs('/data/mp4/2015/dianshiju/',1):
+    print(subdir)
 

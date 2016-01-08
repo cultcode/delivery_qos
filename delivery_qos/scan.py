@@ -10,9 +10,10 @@ import stat
 import time
 import logging
 import stat
+import re
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
-from delivery_qos.common import scan_file, sortdir, disk_overuse,clear_file
+from delivery_qos.common import get_paths, sortdir, scan_file, disk_overuse,clear_file
 from delivery_qos import shell
 from delivery_qos.shell import get_config, set_config
 
@@ -23,8 +24,9 @@ def signal_term_handler(signal, frame):
 
 def scan_store():
   logging.info("Scan_store started")
-  paths = shell.config['paths']
-  paths.sort()
+
+  paths = get_paths(shell.config['paths'],shell.config['subdir_level'])
+
   if shell.config['scan_store_last_path'] in paths:
     index = paths.index(shell.config['scan_store_last_path'])
   else:
@@ -57,11 +59,17 @@ def scan_store():
 
 def scan_incr():
   logging.info("Scan_incr started")
-  paths = shell.config["paths"]
-  paths.sort()
+
+  paths = get_paths(shell.config['paths'],shell.config['subdir_level'])
+
+  now_year = time.localtime(time.time()).tm_year
+  paths = map(lambda path:re.search('/%d/' %now_year, path) and path or None, paths)
+
   scan_incr_mtime_start = time.time() - shell.config["scan_incr_mtime_start"]
 
   for index,path in enumerate(paths):
+    if not path:
+      continue
     filter_cond = lambda e:stat.S_ISREG(e.st_mode) and e.st_mtime > scan_incr_mtime_start
 
     filenames = sortdir(path, sort_cond='mtime', filter_cond=filter_cond)
@@ -74,8 +82,8 @@ def scan_incr():
 
 def scan_disk():
   logging.info("Scan_disk started")
-  paths = shell.config["paths"]
-  paths.sort()
+
+  paths = shell.config['paths']
 
   for index,path in enumerate(paths):
     if disk_overuse(path,shell.config['disk_max_usage']):

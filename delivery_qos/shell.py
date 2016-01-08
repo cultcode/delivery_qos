@@ -12,6 +12,7 @@ def check_config():
   global config
 
   os.path.lexists(config["recyle_bin"]) or os.makedirs(config["recyle_bin"])
+  assert(isinstance(config['paths'], list))
 
 def set_config():
   global config
@@ -58,6 +59,7 @@ def get_config(prog_name):
   #parameters for scan_store
   config.setdefault('scan_store_mtime_end', 7*24*3600)
   config.setdefault('paths', ['/data/mp4'])
+  config.setdefault('subdir_level', 3)
   config.setdefault('scan_store_last_path', '')
   config.setdefault('scan_store_last_mtime', 0)
 
