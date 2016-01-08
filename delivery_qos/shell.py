@@ -22,16 +22,15 @@ def set_config():
     logging.info('dumping config to %s' % config_path)
     try:
       with open(config_path, 'wb') as f:
-        f.write(json.dumps(config).encode('utf8'))
+        f.write(json.dumps(config,indent=1).encode('utf8'))
     except Exception as e:
       logging.error("Can't file.write %s:%s, give up" %(config_path,e))
 
 
-def get_config():
+def get_config(prog_name):
   global config
   config = {}
-
-  config_path = os.path.join('/etc',(__name__.split('.'))[0]+'.json')
+  config_path = os.path.join('/etc', prog_name+'.json')
 
   if os.path.exists(config_path):
     try:
@@ -41,7 +40,7 @@ def get_config():
       logging.error("Can't file.read %s:%s, give up" %(config_path,e))
       sys.exit(1)
 
-  config.setdefault('log-file', os.path.join('/var/log',(__name__.split('.'))[0]+'.log'))
+  config.setdefault('log-file', os.path.join('/var/log', prog_name+'.log'))
 
   logging.getLogger('').handlers = []
   logging.basicConfig(
@@ -54,7 +53,7 @@ def get_config():
 
   #common parameters
   config.setdefault('config_path',config_path)
-  config.setdefault("recyle_bin", os.path.join('/tmp',__name__.split('.')[0]))
+  config.setdefault("recyle_bin", os.path.join('/tmp', prog_name))
 
   #parameters for scan_store
   config.setdefault('scan_store_mtime_end', 7*24*3600)
@@ -69,12 +68,12 @@ def get_config():
   config.setdefault('disk_max_usage', 0.97)
 
   #span
-  config.setdefault('scan_store_span_start',1)
-  config.setdefault('scan_store_span_end',8)
-  config.setdefault('scan_incr_span_start',8)
-  config.setdefault('scan_incr_span_end',12)
-  config.setdefault('scan_disk_span_start',1)
-  config.setdefault('scan_disk_span_end',2)
+  config.setdefault('scan_store_span_start',0)
+  config.setdefault('scan_store_span_end',0)
+  config.setdefault('scan_incr_span_start',0)
+  config.setdefault('scan_incr_span_end',0)
+  config.setdefault('scan_disk_span_start',0)
+  config.setdefault('scan_disk_span_end',0)
 
   check_config()
 

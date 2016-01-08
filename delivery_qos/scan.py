@@ -84,7 +84,7 @@ def scan_disk():
 
 
 def scan():
-  get_config()
+  get_config('delivery_scan')
   signal.signal(signal.SIGTERM, signal_term_handler)
 
   now_hour = time.localtime(time.time()).tm_hour

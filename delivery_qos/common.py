@@ -10,12 +10,7 @@ import stat
 import logging
 import hashlib
 
-# Use the built-in version of scandir/walk if possible, otherwise
-# use the scandir module version
-try:
-    from os import scandir, walk
-except ImportError:
-    from scandir import scandir, walk
+import scandir
 
 def disk_overuse(path,disk_max_usage):
   vfs=os.statvfs(path)
@@ -168,9 +163,15 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   '''
   '''
   fns = []
-  for root, subdirs, files in walk(path):
+  for root, subdirs, files in scandir.walk(path):
     for filename in files:
-      fns.append(os.path.join(root,filename))
+      filename = os.path.join(root,filename)
+      if os.path.exists(filename):
+        fns.append(filename)
+      else:
+        # prevent exception in following os.stat()
+        logging.info('remove broken file %s' %filename)
+        os.remove(filename)
 
   a_fns = map(lambda f: os.path.abspath(f), fns)
   sts = map(os.stat, a_fns)
