@@ -40,14 +40,14 @@ def get_config(prog_name):
       logging.error("Can't file.read %s:%s, give up" %(config_path,e))
       sys.exit(1)
 
-  config.setdefault('log-file', os.path.join('/var/log', prog_name+'.log'))
+  log_file = os.path.join('/var/log', prog_name+'.log')
 
   logging.getLogger('').handlers = []
   logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)-8s %(filename)s %(funcName)s %(lineno)s %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    #filename=config['log-file'],
+    #filename=log_file,
     filemode='a'
   )
 
