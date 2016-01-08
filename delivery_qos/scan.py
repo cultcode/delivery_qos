@@ -100,14 +100,14 @@ def scan():
 
   now_hour = time.localtime(time.time()).tm_hour
 
+  if now_hour in range(shell.config['scan_disk_span_start'],shell.config['scan_disk_span_end']):
+    scan_disk()
+
   if now_hour in range(shell.config['scan_incr_span_start'],shell.config['scan_incr_span_end']):
     scan_incr()
 
   if now_hour in range(shell.config['scan_store_span_start'],shell.config['scan_store_span_end']):
     scan_store()
-
-  if now_hour in range(shell.config['scan_disk_span_start'],shell.config['scan_disk_span_end']):
-    scan_disk()
 
 
 if __name__ == '__main__':
