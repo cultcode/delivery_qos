@@ -18,9 +18,9 @@ from delivery_qos import shell
 from delivery_qos.shell import get_config, set_config
 
 def signal_term_handler(signal, frame):
-    logging.warn('got SIGTERM')
-    set_config()
-    sys.exit(0)
+  logging.warn('got SIGTERM')
+  set_config()
+  sys.exit(0)
 
 def scan_store():
   logging.info("Scan_store started")
