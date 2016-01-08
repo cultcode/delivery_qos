@@ -129,6 +129,8 @@ def scan_file(filename, recyle_bin):
 def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, abspath = True, onlyfn = True):
   '''
   '''
+  logging.info('scanning filesystem : %s' %path)
+
   if sort_cond == "mtime":
     f_sort_cond = lambda e:e[1].st_mtime
   elif sort_cond == "ctime":
