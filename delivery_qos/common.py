@@ -17,10 +17,10 @@ def disk_overuse(path,disk_max_usage):
   available=vfs[statvfs.F_BAVAIL]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)
   capacity=vfs[statvfs.F_BLOCKS]*vfs[statvfs.F_BSIZE]/(1024*1024*1024)  
   if (capacity-available)/capacity >= disk_max_usage:
-    logging.info("disk overused %s %d %d " %(path, available,capacity))
+    logging.info("disk overused %s %dG %dG " %(path, available,capacity))
     return True
   else:
-    logging.info("disk not overused %s %d %d " %(path, available,capacity))
+    logging.info("disk not overused %s %dG %dG " %(path, available,capacity))
     return False
 
 

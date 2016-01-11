@@ -48,7 +48,7 @@ def get_config(prog_name):
     level=logging.INFO,
     format='%(asctime)s %(levelname)-8s %(filename)s %(funcName)s %(lineno)s %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    #filename=log_file,
+    filename=log_file,
     filemode='a'
   )
 
