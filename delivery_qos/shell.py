@@ -70,12 +70,12 @@ def get_config(prog_name):
   config.setdefault('disk_max_usage', 0.97)
 
   #span
-  config.setdefault('scan_store_span_start',1)
-  config.setdefault('scan_store_span_end',8)
-  config.setdefault('scan_incr_span_start',8)
-  config.setdefault('scan_incr_span_end',12)
+  config.setdefault('scan_store_span_start',0)
+  config.setdefault('scan_store_span_end',23)
+  config.setdefault('scan_incr_span_start',0)
+  config.setdefault('scan_incr_span_end',23)
   config.setdefault('scan_disk_span_start',0)
-  config.setdefault('scan_disk_span_end',1)
+  config.setdefault('scan_disk_span_end',23)
 
   check_config()
 

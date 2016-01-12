@@ -180,7 +180,7 @@ def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
   logging.info('scan filesystem completed: %s' %path)
 
   a_fns = map(lambda f: os.path.abspath(f), fns)
-  sts = map(os.stat, a_fns)
+  sts = map(os.lstat, a_fns)
 
   if abspath:
     res = zip(a_fns, sts)

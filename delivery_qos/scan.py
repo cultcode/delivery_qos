@@ -37,11 +37,11 @@ def scan_store():
 
   for index,path in enumerate(paths):
     if index == 0:
-      filter_cond = lambda e:stat.S_ISREG(e.st_mode) and e.st_mtime >= scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
+      filter_cond = lambda e:not stat.S_ISLNK(e.st_mode) and e.st_mtime >= scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
     elif index == len(paths) -1:
-      filter_cond = lambda e:stat.S_ISREG(e.st_mode) and e.st_mtime <  scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
+      filter_cond = lambda e:not stat.S_ISLNK(e.st_mode) and e.st_mtime <  scan_store_last_mtime and e.st_mtime < scan_store_mtime_end
     else:
-      filter_cond = lambda e:stat.S_ISREG(e.st_mode) and e.st_mtime <  scan_store_mtime_end
+      filter_cond = lambda e:not stat.S_ISLNK(e.st_mode) and e.st_mtime <  scan_store_mtime_end
 
     shell.config['scan_store_last_path'] = path
 
@@ -70,7 +70,7 @@ def scan_incr():
   for index,path in enumerate(paths):
     if not path:
       continue
-    filter_cond = lambda e:stat.S_ISREG(e.st_mode) and e.st_mtime > scan_incr_mtime_start
+    filter_cond = lambda e:not stat.S_ISLNK(e.st_mode) and e.st_mtime > scan_incr_mtime_start
 
     filenames = sortdir(path, sort_cond='mtime', filter_cond=filter_cond)
 
@@ -84,14 +84,21 @@ def scan_disk():
   logging.info("Scan_disk started")
 
   paths = shell.config['paths']
+  ret = False
 
   for index,path in enumerate(paths):
     if disk_overuse(path,shell.config['disk_max_usage']):
-      filenames = sortdir(path, sort_cond='atime')
-      amount = int(len(filenames)*0.03)
+      ret = True
+      filter_cond = lambda e:not stat.S_ISLNK(e.st_mode)
+      filenames = sortdir(path, sort_cond='atime', filter_cond=filter_cond)
+      amount = int(len(filenames)*0.01)
       logging.info("%s overused, removing %d files (%d in total)" %(path,amount, len(filenames)))
       for filename in filenames[0:amount]:
         clear_file(filename)
+
+      logging.info("Scan_disk %s completed" %(path))
+
+  return ret
 
 
 def scan():
@@ -101,14 +108,14 @@ def scan():
   now_hour = time.localtime(time.time()).tm_hour
 
   if now_hour in range(shell.config['scan_disk_span_start'],shell.config['scan_disk_span_end']):
-    scan_disk()
-
-  if now_hour in range(shell.config['scan_incr_span_start'],shell.config['scan_incr_span_end']):
-    scan_incr()
+    if scan_disk():
+      return
 
   if now_hour in range(shell.config['scan_store_span_start'],shell.config['scan_store_span_end']):
     scan_store()
 
+  #if now_hour in range(shell.config['scan_incr_span_start'],shell.config['scan_incr_span_end']):
+  #  scan_incr()
 
 if __name__ == '__main__':
   scan()
