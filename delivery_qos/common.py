@@ -209,8 +209,9 @@ def get_subdirs(path,level):
       if entry.is_dir():
         for subdir in  get_subdirs(entry.path, level-1):
           yield subdir
-      else:
-        yield entry.path
+      #else:
+      #  pass
+      #  yield entry.path
 
 
 def get_paths(paths,level):

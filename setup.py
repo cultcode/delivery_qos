@@ -9,9 +9,7 @@ setup(
   author_email='luowei@mgtv.com',
   url = "https://github.com/cultcode/delivery_qos",
   packages=['delivery_qos'],
-  install_requires=[],
-  data_files=[('/etc/init.d', ['/root/luowei/delivery_qos/delivery_scan'])
-  ],
+  install_requires=['scandir'],
   entry_points={
     "console_scripts":[
       '''delivery_scan = delivery_qos.scan:scan''',
