@@ -91,7 +91,7 @@ def scan_disk():
       ret = True
       filter_cond = lambda e:not stat.S_ISLNK(e.st_mode)
       filenames = sortdir(path, sort_cond='atime', filter_cond=filter_cond)
-      amount = int(len(filenames)*0.01)
+      amount = int(len(filenames)*0.03)
       logging.info("%s overused, removing %d files (%d in total)" %(path,amount, len(filenames)))
       for filename in filenames[0:amount]:
         clear_file(filename)
