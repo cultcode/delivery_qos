@@ -1,0 +1,2 @@
+rm -rf /etc/delivery_scan.json
+cp `dirname $0`/cron.d/delivery_scan %{buildroot}/etc/cron.d/
