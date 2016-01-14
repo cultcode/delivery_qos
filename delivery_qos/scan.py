@@ -21,6 +21,7 @@ def signal_term_handler(signal, frame):
   logging.warn('got SIGTERM')
   set_config()
   sys.exit(0)
+  os._exit(0)
 
 def scan_store():
   logging.info("Scan_store started")

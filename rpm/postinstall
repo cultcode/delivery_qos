@@ -1,2 +1,3 @@
 rm -rf /etc/delivery_scan.json
-cp `dirname $0`/cron.d/delivery_scan %{buildroot}/etc/cron.d/
+echo "0 1 * * * /usr/bin/delivery_scan &" > /etc/cron.d/delivery_scan
+echo "0 12 * * * kill \`pgrep delivery_scan\`" >> /etc/cron.d/delivery_scan
