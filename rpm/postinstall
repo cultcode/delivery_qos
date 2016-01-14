@@ -1,3 +1,3 @@
 rm -rf /etc/delivery_scan.json
-echo "0 1 * * * /usr/bin/delivery_scan &" > /etc/cron.d/delivery_scan
-echo "0 12 * * * kill \`pgrep delivery_scan\`" >> /etc/cron.d/delivery_scan
+echo "0 2 * * * /usr/bin/delivery_scan &" > /etc/cron.d/delivery_scan
+echo "0 8 * * * kill \`pgrep delivery_scan\`" >> /etc/cron.d/delivery_scan
