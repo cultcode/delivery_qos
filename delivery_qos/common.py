@@ -115,7 +115,11 @@ def clear_file(filename):
   symlinkname = extract_symlink(filename)
   if symlinkname:
     os.path.lexists(symlinkname) and os.remove(symlinkname)
-  os.remove(filename)
+
+  basename = os.path.basename(filename)
+  ext = basename.split('.')[-1]
+  if ext != "m3u8":
+    os.remove(filename)
 
 
 def scan_file(filename, recyle_bin):
