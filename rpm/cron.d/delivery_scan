@@ -1,2 +1,0 @@
-0 1 * * * /usr/bin/delivery_scan &
-0 12 * * * kill `pidof /usr/bin/delivery_scan`

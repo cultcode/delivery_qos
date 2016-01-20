@@ -1,2 +1,0 @@
-rm -rf /etc/delivery_scan.json
-rm -rf /etc/cron.d/delivery_scan
