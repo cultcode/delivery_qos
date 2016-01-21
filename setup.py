@@ -9,7 +9,6 @@ setup(
   author_email='luowei@mgtv.com',
   url = "https://github.com/cultcode/delivery_qos",
   packages=['delivery_qos'],
-  #install_requires=['scandir'],
   data_files=[('/etc/cron.d', ['delivery_qos/data/etc/cron.d/delivery_scan']),
               ('/etc', ['delivery_qos/data/etc/delivery_scan.json'])
              ],
