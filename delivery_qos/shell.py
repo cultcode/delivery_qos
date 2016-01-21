@@ -39,8 +39,7 @@ def get_config(prog_name):
       with open(config_path, 'rb') as f:
         config = json.loads(f.read().decode('utf8'))
     except Exception as e:
-      logging.error("Can't file.read %s:%s, give up" %(config_path,e))
-      sys.exit(1)
+      logging.warn("Can't decode %s:%s, give up" %(config_path,e))
 
   log_file = os.path.join('/var/log', prog_name+'.log')
 
