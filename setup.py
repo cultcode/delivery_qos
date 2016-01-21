@@ -10,8 +10,8 @@ setup(
   url = "https://github.com/cultcode/delivery_qos",
   packages=['delivery_qos'],
   #install_requires=['scandir'],
-  data_files=[('/etc/cron.d', ['data/etc/cron.d/delivery_scan']),
-              ('/etc', ['data/etc/delivery_scan.json'])
+  data_files=[('/etc/cron.d', ['delivery_qos/data/etc/cron.d/delivery_scan']),
+              ('/etc', ['delivery_qos/data/etc/delivery_scan.json'])
              ],
   entry_points={
     "console_scripts":[

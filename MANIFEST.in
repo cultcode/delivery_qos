@@ -1,2 +1,2 @@
 recursive-include delivery_qos *.py
-recursive-include data *
+recursive-include delivery_qos/data *
