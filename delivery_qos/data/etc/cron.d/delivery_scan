@@ -1,2 +1,2 @@
-0 2 * * * /usr/bin/delivery_scan &
-0 8 * * * kill `pgrep delivery_scan`
+0 2 * * * root /usr/bin/delivery_scan &
+0 8 * * * root kill `pgrep delivery_scan`
