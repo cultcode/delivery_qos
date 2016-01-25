@@ -132,74 +132,52 @@ def scan_file(filename, recyle_bin):
     clear_dirty(filename, recyle_bin)
 
     
-def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False, abspath = True, onlyfn = True):
+def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False):
   '''
   '''
   logging.info('scanning filesystem : %s' %path)
 
   if sort_cond == "mtime":
-    f_sort_cond = lambda e:e[1].st_mtime
+    _sort_cond = lambda e:e[1].st_mtime
   elif sort_cond == "ctime":
-    f_sort_cond = lambda e:e[1].st_ctime
+    _sort_cond = lambda e:e[1].st_ctime
   elif sort_cond == "atime":
-    f_sort_cond = lambda e:e[1].st_atime
+    _sort_cond = lambda e:e[1].st_atime
   elif sort_cond == "size":
-    f_sort_cond = lambda e:e[1].st_size
+    _sort_cond = lambda e:e[1].st_size
   else:
-    f_sort_cond = lambda e:e[1].st_mtime
+    _sort_cond = lambda e:e[1].st_mtime
 
-  f_sf = None
   if filter_cond == None or filter_cond == 3:
-    f_sf = None
+    _filter_cond = None
   elif type(filter_cond) == type(lambda x:x):
-    f_sf = filter_cond
+    _filter_cond = filter_cond
   else:
     if filter_cond == 1:
-      f_sf = lambda e: stat.S_ISDIR(e.st_mode) == 0
+      _filter_cond = lambda e: stat.S_ISDIR(e.st_mode) == 0
     elif filter_cond == 2:
-      f_sf = lambda e: stat.S_ISDIR(e.st_mode)
+      _filter_cond = lambda e: stat.S_ISDIR(e.st_mode)
     else:
-      f_sf = None
+      _filter_cond = None
 
-  if onlyfn:
-    return map(lambda e:e[0], __sortdir(path, f_sort_cond, f_sf, reverse, abspath))
+  res = list(__sortdir(path, _filter_cond))
+  res = sorted(res, key = _sort_cond, reverse = reverse)
+  return map(lambda e:e[0], res)
 
-  return __sortdir(path, f_sort_cond, f_sf, reverse, abspath)
 
-
-def __sortdir(path, sort_cond, filter_cond, reverse, abspath):
+def __sortdir(path, filter_cond):
   '''
   '''
-  fns = []
-  for root, subdirs, files in scandir.walk(path):
-    for filename in files:
-      filename = os.path.join(root,filename)
-      if os.path.exists(filename):
-        fns.append(filename)
+  for entry in scandir.scandir(path):
+    if not entry.name.startswith('.'):
+      if entry.is_dir(follow_symlinks=False):
+        for e in __sortdir(entry.path,filter_cond):
+          yield e
       else:
-        # prevent exception in following os.stat()
-        logging.info('remove broken file %s' %filename)
-        os.remove(filename)
-
-  logging.info('scan filesystem completed: %s' %path)
-
-  a_fns = map(lambda f: os.path.abspath(f), fns)
-  sts = map(os.lstat, a_fns)
-
-  if abspath:
-    res = zip(a_fns, sts)
-  else:
-    res = zip(fns, sts)
-
-  if filter_cond == None:
-    return sorted(res, key = sort_cond, reverse = reverse)
-
-  n_res = []
-  for e in res:
-    if filter_cond(e[1]):
-      n_res.append(e)
-
-  return sorted(n_res, key = sort_cond, reverse = reverse)
+        if filter_cond and not filter_cond(entry.stat(follow_symlinks=False)):
+          pass
+        else:
+          yield (entry.path,entry.stat(follow_symlinks=False))
 
 
 def get_subdirs(path,level):
