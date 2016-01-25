@@ -103,10 +103,12 @@ def scan_disk():
 
 
 def scan():
+  logging.info("scan() started")
   get_config('delivery_scan')
   signal.signal(signal.SIGTERM, signal_term_handler)
 
   now_hour = time.localtime(time.time()).tm_hour
+  logging.info("now_hour is {0}".format(now_hour))
 
   if now_hour in range(shell.config['scan_disk_span_start'],shell.config['scan_disk_span_end']):
     if scan_disk():

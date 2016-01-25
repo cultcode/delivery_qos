@@ -174,10 +174,15 @@ def __sortdir(path, filter_cond):
         for e in __sortdir(entry.path,filter_cond):
           yield e
       else:
-        if filter_cond and not filter_cond(entry.stat(follow_symlinks=False)):
-          pass
+        try:
+          stat = entry.stat(follow_symlinks=False)
+        except Exception as e:
+          logging.warn("Can't entry.stat %s:%s" %(entry.path,e))
         else:
-          yield (entry.path,entry.stat(follow_symlinks=False))
+          if filter_cond and not filter_cond(stat):
+            pass
+          else:
+            yield (entry.path,stat)
 
 
 def get_subdirs(path,level):

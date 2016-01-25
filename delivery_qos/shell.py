@@ -71,11 +71,11 @@ def get_config(prog_name):
 
   #span
   config.setdefault('scan_store_span_start',0)
-  config.setdefault('scan_store_span_end',23)
+  config.setdefault('scan_store_span_end',24)
   config.setdefault('scan_incr_span_start',0)
-  config.setdefault('scan_incr_span_end',23)
+  config.setdefault('scan_incr_span_end',24)
   config.setdefault('scan_disk_span_start',0)
-  config.setdefault('scan_disk_span_end',23)
+  config.setdefault('scan_disk_span_end',24)
 
   check_config()
 
