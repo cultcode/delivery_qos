@@ -161,8 +161,10 @@ def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False):
       _filter_cond = None
 
   res = []
-  for e in __sortdir(path, _filter_cond):
+  for i,e in enumerate(__sortdir(path, _filter_cond)):
     res.append((e[0],_sort_cond(e)))
+    if not ((i+1)%10000):
+      logging.info('scanned %d files in %s' %(i+1,path))
 
   res = sorted(res, key = lambda e:e[1], reverse = reverse)
   return map(lambda e:e[0], res)
