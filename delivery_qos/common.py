@@ -160,8 +160,11 @@ def sortdir(path, sort_cond = 'mtime', filter_cond = None, reverse = False):
     else:
       _filter_cond = None
 
-  res = list(__sortdir(path, _filter_cond))
-  res = sorted(res, key = _sort_cond, reverse = reverse)
+  res = []
+  for e in __sortdir(path, _filter_cond):
+    res.append((e[0],_sort_cond(e)))
+
+  res = sorted(res, key = lambda e:e[1], reverse = reverse)
   return map(lambda e:e[0], res)
 
 
