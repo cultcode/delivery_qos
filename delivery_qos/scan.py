@@ -24,7 +24,7 @@ def signal_term_handler(signal, frame):
   os._exit(0)
 
 def scan_store():
-  logging.info("Scan_store started")
+  logging.info("scan_store started")
 
   paths = get_paths(shell.config['paths'],shell.config['subdir_level'])
 
@@ -53,13 +53,13 @@ def scan_store():
 
       scan_file(filename, shell.config['recyle_bin'])
 
-    logging.info("Scan_store %s completed: %d files in total" %(path,len(filenames)))
+    logging.info("scan_store %s completed: %d files in total" %(path,len(filenames)))
 
   set_config()
 
 
 def scan_incr():
-  logging.info("Scan_incr started")
+  logging.info("scan_incr started")
 
   paths = get_paths(shell.config['paths'],shell.config['subdir_level'])
 
@@ -78,11 +78,11 @@ def scan_incr():
     for filename in filenames:
       scan_file(filename, shell.config['recyle_bin'])
 
-    logging.info("Scan_incr %s completed: %d files in total" %(path,len(filenames)))
+    logging.info("scan_incr %s completed: %d files in total" %(path,len(filenames)))
 
 
 def scan_disk():
-  logging.info("Scan_disk started")
+  logging.info("scan_disk started")
 
   paths = shell.config['paths']
   ret = False
@@ -97,7 +97,9 @@ def scan_disk():
       for filename in filenames[0:amount]:
         clear_file(filename)
 
-      logging.info("Scan_disk %s completed" %(path))
+      logging.info("scan_disk %s completed" %(path))
+    else:
+      logging.info("%s not overused" %(path))
 
   return ret
 
