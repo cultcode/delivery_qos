@@ -4,12 +4,13 @@
 from setuptools import setup
 setup(
   name='delivery_qos',
-  version='1.2.3',
+  version='1.3.0',
   author='rovere',
   author_email='luowei@mgtv.com',
   url = "https://github.com/cultcode/delivery_qos",
   packages=['delivery_qos'],
   data_files=[('/etc/cron.d', ['delivery_qos/data/etc/cron.d/delivery_scan']),
+              ('/etc/logrotate.d', ['delivery_qos/data/etc/logrotate.d/delivery_scan']),
               ('/etc', ['delivery_qos/data/etc/delivery_scan.json'])
              ],
   entry_points={

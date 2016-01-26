@@ -1,0 +1,8 @@
+/var/log/delivery_scan.log {
+    missingok
+    daily
+    dateext
+    compress
+    rotate 7
+    copytruncate
+}
