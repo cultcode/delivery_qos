@@ -20,7 +20,7 @@ from delivery_qos.shell import get_config, set_config
 def signal_term_handler(signal, frame):
   logging.warn('got SIGTERM')
   set_config()
-  sys.exit(0)
+  #sys.exit(0)
   os._exit(0)
 
 def scan_store():

@@ -4,7 +4,7 @@
 from setuptools import setup
 setup(
   name='delivery_qos',
-  version='1.3.1',
+  version='1.3.2',
   author='rovere',
   author_email='luowei@mgtv.com',
   url = "https://github.com/cultcode/delivery_qos",
