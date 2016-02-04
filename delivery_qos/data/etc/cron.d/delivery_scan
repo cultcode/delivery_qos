@@ -1,2 +1,3 @@
 0 2 * * * root /usr/bin/delivery_scan &
-0 9 * * * root pkill delivery_scan && pkill -9 delivery_scan
+0 9 * * * root pkill delivery_scan
+1 9 * * * root pkill -9 delivery_scan
